@@ -53,7 +53,6 @@ class ConsultasSQL:
             """
             self.cursor.executemany(consulta, datos_convertidos)
             self.coneccion_db.conn.commit()
-            self.coneccion_db.cerrar_conexion()
             return True
         except pymysql.MySQLError as e:
             print(f"Error al ejecutar la consulta: {e}")
@@ -64,17 +63,30 @@ class ConsultasSQL:
         datos_filtrados = []
         for registro in datos:
             fecha = registro[0]
+            fecha_arreglada = datetime.strptime(fecha, "%d/%m/%Y").strftime("%Y-%m-%d")
             hora = registro[1]
-            serial = registro[2]
-            hostname = registro[6]
+            serial = registro[3]
+            hostname = registro[7]
             consulta = """
-                SELECT COUNT(*) FROM Registros
+                SELECT COUNT(*) AS cnt FROM Registros
                 WHERE Fecha = %s AND Hora = %s AND Serial = %s AND Hostname = %s
             """
             try:
-                self.cursor.execute(consulta, (fecha, hora, serial, hostname))
-                existe = self.cursor.fetchone()[0]
-                if existe == 0:
+                self.cursor.execute(consulta, (fecha_arreglada, hora, serial, hostname))
+                resultado = self.cursor.fetchone()
+                if resultado is None:
+                    existe = 0
+                elif isinstance(resultado, dict):
+                    existe = resultado.get('cnt')
+                    if existe is None:
+                        try:
+                            existe = next(iter(resultado.values()))
+                        except StopIteration:
+                            existe = 0
+                else:
+                    existe = resultado[0] if len(resultado) > 0 else 0
+
+                if not existe:
                     datos_filtrados.append(registro)
             except pymysql.MySQLError as e:
                 print(f"Error al verificar duplicados: {e}")

@@ -55,7 +55,8 @@ def Guardar_datos_stage_csv(lista_datos, hostname_path):
               "ModelFile","Medio_id"]
     # si no existe, escribo header. Si existe, solo append
     existe = os.path.exists(archivo_series)
-    with open(archivo_series, mode="a", newline="", encoding="utf-8") as file:
+    mode = "a" if existe else "w"
+    with open(archivo_series, mode=mode, newline="", encoding="utf-8") as file:
         writer = csv.DictWriter(file, fieldnames=campos)
         if not existe:
             writer.writeheader()
