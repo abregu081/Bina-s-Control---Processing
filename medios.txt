@@ -1,0 +1,7 @@
+ManualInspection
+AutoTest
+OQC
+PCBInspeccionDCSD
+ICT
+PCBInspeccionMAIN
+LADCMAF

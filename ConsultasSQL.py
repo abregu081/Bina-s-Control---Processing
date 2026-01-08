@@ -45,18 +45,45 @@ class ConsultasSQL:
                     except Exception:
                         registro[idx] = None
             datos_convertidos.append(tuple(registro))
-        try:
-            consulta = """
-            INSERT INTO Registros
-            (Fecha, Hora, Modelo,Serial, Resultado, Detalle, Medio, Hostname, Planta, Banda, Box, IMEI, SKU, TestTime, Runtime, ModelFile, Medio_id)
-            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
-            """
-            self.cursor.executemany(consulta, datos_convertidos)
-            self.coneccion_db.conn.commit()
+        if not datos_convertidos:
             return True
-        except pymysql.MySQLError as e:
-            print(f"Error al ejecutar la consulta: {e}")
-            self.coneccion_db.conn.rollback()
+
+        consulta = """
+        INSERT INTO Registros
+        (Fecha, Hora, Modelo,Serial, Resultado, Detalle, Medio, Hostname, Planta, Banda, Box, IMEI, SKU, TestTime, Runtime, ModelFile, Medio_id)
+        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+        """
+
+        total = len(datos_convertidos)
+        batch_size = 30000
+        inserted = 0
+        def _print_progress(current, total, bar_length=40):
+            percent = float(current) / total if total else 1
+            filled = int(bar_length * percent)
+            bar = '█' * filled + '-' * (bar_length - filled)
+            print(f"\rProgreso: |{bar}| {current}/{total} ({percent*100:.1f}%)", end='', flush=True)
+            if current == total:
+                print()
+        try:
+            for start in range(0, total, batch_size):
+                end = min(start + batch_size, total)
+                batch = datos_convertidos[start:end]
+                try:
+                    self.cursor.executemany(consulta, batch)
+                    self.coneccion_db.conn.commit()
+                    inserted += len(batch)
+                except pymysql.MySQLError as e:
+                    print(f"\nError en batch {start}-{end}: {e}")
+                    self.coneccion_db.conn.rollback()
+                _print_progress(inserted, total)
+
+            return True
+        except Exception as e:
+            print(f"Error al ejecutar la inserción por lotes: {e}")
+            try:
+                self.coneccion_db.conn.rollback()
+            except Exception:
+                pass
             return False
         
     def evitar_duplicados(self, datos):
@@ -92,5 +119,3 @@ class ConsultasSQL:
                 print(f"Error al verificar duplicados: {e}")
                 continue
         return datos_filtrados
-        
-            
