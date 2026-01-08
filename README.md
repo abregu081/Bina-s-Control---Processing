@@ -1,6 +1,8 @@
 # Modulo de Captura de Logs Formato-Mirgor para entrenamiento de un MiniModelo
 
+
 # Detalles:
+1. Version 1.0 - 2.0Laboral
 1. Se agregara Proximante el manejo de un hilo para la insercion de los tests realizados
 2. La version Compilada es de uso exclusivo para Windows
 3. Si el medio colocado no esta presente en la db dara un error ("Insertalo antes de ejecutar")
