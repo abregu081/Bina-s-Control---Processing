@@ -1,44 +1,35 @@
-import sys
-import os
+# ConectorDB.py
 import pymysql
 import Configuraciones as cfg
 
 class ConectorDB:
     def __init__(self):
-        self.conexion = False
         self.configuraciones = cfg.Configuraciones()
         self.datos = self.configuraciones.obtener_datos_parametros_db()
-        self.host = self.datos[0]
-        self.user = self.datos[1]
-        self.password = self.datos[2]
-        self.database = self.datos[3]
+        self.host, self.user, self.password, self.database = self.datos[:4]
+
         self.conn = None
-        if self.conn != None:
-            self.cursor = self.conn.cursor(pymysql.cursors.DictCursor)
-        else:
-            self.cursor = None
+        self.cursor = None
+        self.conexion = False
 
     def conectar_db(self):
-        conexion = pymysql.connect(
+        self.conn = pymysql.connect(
             host=self.host,
             user=self.user,
             password=self.password,
-            database=self.database
+            database=self.database,
+            charset="utf8mb4",
+            cursorclass=pymysql.cursors.DictCursor,
+            autocommit=False
         )
-        if conexion.open:
-            self.conn = conexion
-            self.conexion = True
-        else:
-            raise Exception("No se pudo conectar a la base de datos")
-    
+        self.cursor = self.conn.cursor()
+        self.conexion = True
+
     def cerrar_conexion(self):
+        if self.cursor:
+            self.cursor.close()
         if self.conn:
             self.conn.close()
-            self.conexion = False
-    
-    def reconexion_db(self):
-        self.cerrar_conexion()
-        self.conectar_db()
-
-
-    
+        self.cursor = None
+        self.conn = None
+        self.conexion = False
