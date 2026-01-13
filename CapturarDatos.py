@@ -62,6 +62,12 @@ def Guardar_datos_stage_csv(lista_datos, hostname_path):
             writer.writeheader()
 
         for dato in lista_datos:
+            # OJO PONGO ESTO POR SI BOX NO EXISTE EN ALGUNOS LOGS, ASI USA JIG EN SU LUGAR
+            box_crudo = dato.get("BOX", "").strip()
+            if not box_crudo:
+                box_crudo = dato.get("JIG", "").strip()
+            box_value = f"0{box_crudo}" if box_crudo else ""
+
             fecha_original = dato.get("DATE", "")
             writer.writerow({
                 "Fecha": cambiar_formato_fecha(fecha_original) if fecha_original else "",
@@ -74,7 +80,7 @@ def Guardar_datos_stage_csv(lista_datos, hostname_path):
                 "Hostname": hostname_path,
                 "Planta": planta,
                 "Banda": "",
-                "Box": f"0{dato.get("BOX", "")}",
+                "Box": box_value,
                 "IMEI": dato.get("IMEINO", ""),
                 "SKU": dato.get("SKU", ""),
                 "TestTime": dato.get("TEST-TIME", ""),

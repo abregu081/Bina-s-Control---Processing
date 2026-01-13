@@ -87,35 +87,96 @@ class ConsultasSQL:
             return False
         
     def evitar_duplicados(self, datos):
+        """
+        Versión optimizada: en lugar de hacer 1 query por registro,
+        obtenemos todos los registros existentes del hostname en UNA sola consulta
+        y filtramos en memoria (mucho más rápido).
+        """
+        if not datos:
+            return []
+        
+        # Extraer hostnames únicos de los datos
+        hostnames = set(registro[7] for registro in datos)
+        
+        # Obtener fechas mínima y máxima para acotar la consulta
+        fechas = []
+        for registro in datos:
+            try:
+                fecha = datetime.strptime(registro[0], "%d/%m/%Y").strftime("%Y-%m-%d")
+                fechas.append(fecha)
+            except:
+                continue
+        
+        if not fechas:
+            return datos
+        
+        fecha_min = min(fechas)
+        fecha_max = max(fechas)
+        
+        # Una sola consulta para traer todos los registros existentes en ese rango
+        registros_existentes = set()
+        try:
+            placeholders = ', '.join(['%s'] * len(hostnames))
+            consulta = f"""
+                SELECT Fecha, Hora, Serial, Hostname FROM Registros
+                WHERE Hostname IN ({placeholders})
+                AND Fecha BETWEEN %s AND %s
+            """
+            params = list(hostnames) + [fecha_min, fecha_max]
+            self.cursor.execute(consulta, params)
+            resultados = self.cursor.fetchall()
+            
+            for row in resultados:
+                if isinstance(row, dict):
+                    fecha_db = row['Fecha']
+                    hora_db = row['Hora']
+                    serial_db = row['Serial']
+                    hostname_db = row['Hostname']
+                else:
+                    fecha_db, hora_db, serial_db, hostname_db = row[0], row[1], row[2], row[3]
+                
+                # Normalizar fecha a string para comparación
+                if hasattr(fecha_db, 'strftime'):
+                    fecha_db = fecha_db.strftime("%Y-%m-%d")
+                else:
+                    fecha_db = str(fecha_db)
+                
+                # Normalizar hora a string
+                if hasattr(hora_db, 'strftime'):
+                    hora_db = hora_db.strftime("%H:%M:%S")
+                elif hasattr(hora_db, 'seconds'):
+                    total_seconds = hora_db.seconds
+                    hours = total_seconds // 3600
+                    minutes = (total_seconds % 3600) // 60
+                    seconds = total_seconds % 60
+                    hora_db = f"{hours:02d}:{minutes:02d}:{seconds:02d}"
+                else:
+                    hora_db = str(hora_db)
+                
+                # Crear clave única (fecha, hora, serial, hostname)
+                clave = (fecha_db, hora_db, str(serial_db), str(hostname_db))
+                registros_existentes.add(clave)
+                
+        except pymysql.MySQLError as e:
+            print(f"Error al obtener registros existentes: {e}")
+            return datos  # Si falla, devolvemos todos para no perder datos
+        
+        # Filtrar en memoria (súper rápido)
         datos_filtrados = []
         for registro in datos:
-            fecha = registro[0]
-            fecha_arreglada = datetime.strptime(fecha, "%d/%m/%Y").strftime("%Y-%m-%d")
-            hora = registro[1]
-            serial = registro[3]
-            hostname = registro[7]
-            consulta = """
-                SELECT COUNT(*) AS cnt FROM Registros
-                WHERE Fecha = %s AND Hora = %s AND Serial = %s AND Hostname = %s
-            """
             try:
-                self.cursor.execute(consulta, (fecha_arreglada, hora, serial, hostname))
-                resultado = self.cursor.fetchone()
-                if resultado is None:
-                    existe = 0
-                elif isinstance(resultado, dict):
-                    existe = resultado.get('cnt')
-                    if existe is None:
-                        try:
-                            existe = next(iter(resultado.values()))
-                        except StopIteration:
-                            existe = 0
-                else:
-                    existe = resultado[0] if len(resultado) > 0 else 0
-
-                if not existe:
+                fecha_arreglada = datetime.strptime(registro[0], "%d/%m/%Y").strftime("%Y-%m-%d")
+                hora = registro[1]
+                serial = registro[3]
+                hostname = registro[7]
+                
+                clave = (fecha_arreglada, hora, str(serial), str(hostname))
+                
+                if clave not in registros_existentes:
                     datos_filtrados.append(registro)
-            except pymysql.MySQLError as e:
-                print(f"Error al verificar duplicados: {e}")
-                continue
+            except Exception as e:
+                # Si hay error parseando, lo incluimos para no perder datos
+                datos_filtrados.append(registro)
+                
+        print(f"  -> Filtrado: {len(datos)} totales, {len(datos_filtrados)} nuevos, {len(datos) - len(datos_filtrados)} duplicados")
         return datos_filtrados
