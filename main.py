@@ -1,4 +1,5 @@
 import os, csv
+import sys
 import Configuraciones as cfg
 import datetime
 import CapturarDatos as Captura
@@ -14,7 +15,11 @@ logs_path = config.obtenerv_datos_configuracionees()[4]
 hostnames_tuplas = config.obtener_datos_hostname()
 lista_hostnames = [h[1] for h in hostnames_tuplas]
 medio = config.obtenerv_datos_configuracionees()[0]
-carpeta_actual = os.path.dirname(os.path.abspath(__file__))
+
+if getattr(sys, 'frozen', False):
+    carpeta_actual = os.path.dirname(sys.executable)
+else:
+    carpeta_actual = os.path.dirname(os.path.abspath(__file__))
 
 #estas son las variables para las estadisiticas finales (capaz las borre despues)
 cpu = ps.cpu_percent(interval=1)

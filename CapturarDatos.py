@@ -1,4 +1,5 @@
 import os, csv, re
+import sys
 import Configuraciones as cfg
 import datetime
 import ConsultasSQL as SQL
@@ -10,7 +11,12 @@ hostnames_tuplas = config.obtener_datos_hostname()
 lista_hostnames = [h[1] for h in hostnames_tuplas]
 medio = config.obtenerv_datos_configuracionees()[0]
 planta = config.obtenerv_datos_configuracionees()[2]
-carpeta_actual = os.path.dirname(os.path.abspath(__file__))
+
+if getattr(sys, 'frozen', False):
+    carpeta_actual = os.path.dirname(sys.executable)
+else:
+    carpeta_actual = os.path.dirname(os.path.abspath(__file__))
+
 carpeta_escenario = os.path.join(carpeta_actual, "Escenario")
 os.makedirs(carpeta_escenario, exist_ok=True)
 archivo_series = os.path.join(carpeta_escenario, "SeriesCapturados.csv")

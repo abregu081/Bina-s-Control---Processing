@@ -1,4 +1,5 @@
 import os
+import sys
 
 class Configuraciones:
     def __init__(self):
@@ -9,7 +10,13 @@ class Configuraciones:
     @staticmethod
     def obtener_valores(archivo):
         diccionario = {}
-        carpeta_actual = os.path.dirname(os.path.abspath(__file__))
+        if getattr(sys, 'frozen', False):
+            # Si la aplicación está compilada
+            carpeta_actual = os.path.dirname(sys.executable)
+        else:
+            # Si se ejecuta como script .py
+            carpeta_actual = os.path.dirname(os.path.abspath(__file__))
+            
         ruta_completa = os.path.join(carpeta_actual, archivo)
         with open(ruta_completa, 'r') as file:
             for linea in file:
