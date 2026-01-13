@@ -18,11 +18,11 @@
 ## Version Vieja de Produccion
 | Medio | Version_Vieja | Version_Factorizada |
 |-------|---------------|---------------------|
-| ManualInspection | 1.2 | 1.0 |
-| AutoTest | 1.2 | 1.0 |
-| OQC | 1.2 | 1.0 |
-| PCBInspeccionDCSD | 1.2 | 1.0 |
-| ICT | 1.2 | 1.0 |
-| PCBInspeccionMAIN | 1.2 | 1.0 |
-| LADCMAF | 1.2 | 1.0 |
+| ManualInspection | 1.2 | 1.0.1 |
+| AutoTest | 1.2 | 1.0.1 |
+| OQC | 1.2 | 1.0.1 |
+| PCBInspeccionDCSD | 1.2 | 1.0.1 |
+| ICT | 1.2 | 1.0.1 |
+| PCBInspeccionMAIN | 1.2 | 1.0.1 |
+| LADCMAF | 1.2 | 1.0.1 |
 
