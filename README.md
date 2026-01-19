@@ -2,13 +2,11 @@
 
 
 # Detalles:
-1. Version 1.0 - 2.0Laboral
-1. Se agregara Proximante el manejo de un hilo para la insercion de los tests realizados
-2. La version Compilada es de uso exclusivo para Windows
-3. Si el medio colocado no esta presente en la db dara un error ("Insertalo antes de ejecutar")
-4. Se agrega el detalle dump la estructura de la db
-5. Ademas de la incorporacion de un .sql para realizar una migracion a la base de datos de TestingDB_QA. 
-
+1. Esta rama es la para los logs especiales de la dcm
+2. Cambio principal, no se agrega el 0 como carater debido a que ya cuenta el log con  el mismo. 
+            box_value = f"{box_crudo}" if box_crudo else "" #Cuidado aca si nuesto log tiene JIG : 08
+3. Si no lo tuviera habria que cambiarlo
+            
 ## Notas:
 1. Este es un reversionado de la primeras versiones de 2025 Realizado en mis practicas
 2. Se optimiza para su acoplamiento junto con grafa y powerBI
@@ -25,4 +23,4 @@
 | ICT | 1.2 | 1.0.1 |
 | PCBInspeccionMAIN | 1.2 | 1.0.1 |
 | LADCMAF | 1.2 | 1.0.1 |
-
+| RUNIN | 1.2 | 1.0.1 |

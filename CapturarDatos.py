@@ -70,10 +70,10 @@ def Guardar_datos_stage_csv(lista_datos, hostname_path):
         for dato in lista_datos:
             # OJO PONGO ESTO POR SI BOX NO EXISTE EN ALGUNOS LOGS, ASI USA JIG EN SU LUGAR
             box_crudo = dato.get("BOX", "").strip()
-            if not box_crudo:
+            if not box_crudo or box_crudo == "0":
                 box_crudo = dato.get("JIG", "").strip()
-            box_value = f"0{box_crudo}" if box_crudo else ""
-
+            box_value = f"{box_crudo}" if box_crudo else "" #Cuidado aca si nuesto log tiene JIG : 08
+            
             fecha_original = dato.get("DATE", "")
             writer.writerow({
                 "Fecha": cambiar_formato_fecha(fecha_original) if fecha_original else "",
