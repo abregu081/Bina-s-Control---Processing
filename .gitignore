@@ -1,4 +1,7 @@
 ./venv
+__pycache__/
+*.pyc
+*.pyo
 ./__pycache__
 ./52245228_OQC_TOP501_20250705_01.csv
 ./Escenario/
