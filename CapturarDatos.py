@@ -37,8 +37,8 @@ def Procesar_archivo(archivo):
     inicio_registro = "#INIT"
     final_registro = "//PC_RAM_END"
     patron = re.compile(
-        rf"{re.escape(inicio_registro)}.*?{re.escape(final_registro)}.*?$",
-        re.DOTALL | re.MULTILINE
+        rf"{re.escape(inicio_registro)}.*?{re.escape(final_registro)}",
+        re.DOTALL
     )
     resultados = []
     with open(archivo, "r", encoding="utf-8", errors="ignore") as f:
