@@ -31,7 +31,7 @@ class Configuraciones:
         self.diccionario_configuraciones = self.obtener_valores('Configuraciones.cfg')
         nombre_estacion = self.diccionario_configuraciones.get('NombreDeEstacion', '')
         TokenAcceso = self.diccionario_configuraciones.get('TokenAcceso', '')
-        Planta = self.diccionario_configuraciones.get('Planta', '')
+        Planta = self.diccionario_configuraciones.get('Planta', '') #Necesita un par de cambios en la base de datos
         Modo_Dev = self.diccionario_configuraciones.get('Modo_Dev', '')
         logs_path = self.diccionario_configuraciones.get('logs_path', '')
         return nombre_estacion, TokenAcceso, Planta, Modo_Dev, logs_path
