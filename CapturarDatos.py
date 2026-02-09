@@ -4,6 +4,8 @@ import Configuraciones as cfg
 import datetime
 import ConsultasSQL as SQL
 
+
+#Consultas para la seccion
 consultas_sql = SQL.ConsultasSQL()
 config = cfg.Configuraciones()
 logs_path = config.obtenerv_datos_configuracionees()[4]
@@ -27,7 +29,7 @@ medio_id = medio_id['ID_Medios_de_produccion'] if medio_id else None
 palabras_clave = [
     "DATE :", "MODEL :", "P/N :", "TIME :",
     "PROGRAM :", "INIFILE :", "FAILITEM :",
-    "IMEINO :", "SKU :", "TEST-TIME :", "RESULT :", "JIG :", "BOX :"]
+    "IMEINO :", "SKU :", "TEST-TIME :", "RESULT :", "JIG :", "BOX :", "ModelFile:"] # Se quitó el espacio previo al ":"
 
 def cambiar_formato_fecha(fecha):
     año, mes, dia = fecha.split("/")
@@ -49,7 +51,8 @@ def Procesar_archivo(archivo):
         for linea in bloque.splitlines():
             for palabra in palabras_clave:
                 if linea.startswith(palabra):
-                    clave = palabra.replace(" :", "").strip()
+                    # Reemplazamos tanto " :" como ":" para obtener la clave limpia
+                    clave = palabra.replace(" :", "").replace(":", "").strip()
                     valor = linea.replace(palabra, "").strip()
                     datos_registro[clave] = valor
         resultados.append(datos_registro)
@@ -91,6 +94,6 @@ def Guardar_datos_stage_csv(lista_datos, hostname_path):
                 "SKU": dato.get("SKU", ""),
                 "TestTime": dato.get("TEST-TIME", ""),
                 "Runtime": "",
-                "ModelFile": "",
+                "ModelFile": dato.get("ModelFile", ""),
                 "Medio_id": medio_id
             })
