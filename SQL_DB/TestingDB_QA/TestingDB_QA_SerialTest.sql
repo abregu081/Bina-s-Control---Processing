@@ -16,24 +16,24 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Table structure for table `SerialTest`
---
+-- Table structure for table `serialtest`
 
+DROP TABLE IF EXISTS `serialtest`;
 DROP TABLE IF EXISTS `SerialTest`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `SerialTest` (
-  `ID_SerialTest` int NOT NULL AUTO_INCREMENT,
-  `IDRegistros` int NOT NULL,
-  `TestNombre` varchar(150) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `Valor` double DEFAULT NULL,
-  `ValorLimit_Low` double DEFAULT NULL,
-  `ValorLimit_High` double DEFAULT NULL,
-  `Unidad` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `Resultado` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  PRIMARY KEY (`ID_SerialTest`),
-  KEY `SerialTest_ibfk_1` (`IDRegistros`),
-  CONSTRAINT `SerialTest_ibfk_1` FOREIGN KEY (`IDRegistros`) REFERENCES `Registros` (`IDRegistros`) ON DELETE CASCADE ON UPDATE CASCADE
+CREATE TABLE `serialtest` (
+  `id_serialtest` int NOT NULL AUTO_INCREMENT,
+  `idregistros` int NOT NULL,
+  `testnombre` varchar(150) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `valor` double DEFAULT NULL,
+  `valorlimit_low` double DEFAULT NULL,
+  `valorlimit_high` double DEFAULT NULL,
+  `unidad` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `resultado` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  PRIMARY KEY (`id_serialtest`),
+  KEY `serialtest_ibfk_1` (`idregistros`),
+  CONSTRAINT `serialtest_ibfk_1` FOREIGN KEY (`idregistros`) REFERENCES `registros` (`idregistros`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -41,9 +41,9 @@ CREATE TABLE `SerialTest` (
 -- Dumping data for table `SerialTest`
 --
 
-LOCK TABLES `SerialTest` WRITE;
-/*!40000 ALTER TABLE `SerialTest` DISABLE KEYS */;
-/*!40000 ALTER TABLE `SerialTest` ENABLE KEYS */;
+LOCK TABLES `serialtest` WRITE;
+/*!40000 ALTER TABLE `serialtest` DISABLE KEYS */;
+/*!40000 ALTER TABLE `serialtest` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 

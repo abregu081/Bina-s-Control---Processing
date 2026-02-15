@@ -16,34 +16,36 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Table structure for table `Registros`
---
 
-DROP TABLE IF EXISTS `Registros`;
+-- Table structure for table `registros`
+DROP TABLE IF EXISTS `registros`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `Registros` (
   `IDRegistros` int NOT NULL AUTO_INCREMENT,
   `Fecha` date DEFAULT NULL,
   `Hora` time DEFAULT NULL,
-  `Modelo` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `Serial` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `Resultado` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `Detalle` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
-  `Medio` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `Hostname` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `Planta` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `Banda` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `Box` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `IMEI` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `SKU` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `TestTime` float DEFAULT NULL,
-  `Runtime` float DEFAULT NULL,
-  `ModelFile` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `Medio_id` int NOT NULL,
-  PRIMARY KEY (`IDRegistros`),
-  KEY `Registros_ibfk_1` (`Medio_id`),
-  CONSTRAINT `Registros_ibfk_1` FOREIGN KEY (`Medio_id`) REFERENCES `Medios_de_produccion` (`ID_Medios_de_produccion`)
+  `modelo` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `serial` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `resultado` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `detalle` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
+  `medio` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `hostname` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `planta` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `banda` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `box` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `imei` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `sku` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `testtime` float DEFAULT NULL,
+  `runtime` float DEFAULT NULL,
+  `modelfile` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `medio_id` int NOT NULL,
+) ENGINE=InnoDB AUTO_INCREMENT=1270642 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+  PRIMARY KEY (`idregistros`),
+  KEY `registros_ibfk_1` (`medio_id`),
+  CONSTRAINT `registros_ibfk_1` FOREIGN KEY (`medio_id`) REFERENCES `medios_de_produccion` (`id_medios_de_produccion`)
+) ENGINE=InnoDB AUTO_INCREMENT=1270642 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 ) ENGINE=InnoDB AUTO_INCREMENT=1270642 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -54,6 +56,10 @@ CREATE TABLE `Registros` (
 LOCK TABLES `Registros` WRITE;
 /*!40000 ALTER TABLE `Registros` DISABLE KEYS */;
 /*!40000 ALTER TABLE `Registros` ENABLE KEYS */;
+UNLOCK TABLES;
+LOCK TABLES `registros` WRITE;
+/*!40000 ALTER TABLE `registros` DISABLE KEYS */;
+/*!40000 ALTER TABLE `registros` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
