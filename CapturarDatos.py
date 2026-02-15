@@ -27,7 +27,7 @@ medio_id = medio_id['id_medios_de_produccion'] if medio_id else None
 palabras_clave = [
     "DATE :", "MODEL :", "P/N :", "TIME :",
     "PROGRAM :", "INIFILE :", "FAILITEM :",
-    "IMEINO :", "SKU :", "TEST-TIME :", "RESULT :", "JIG :", "BOX :"]
+    "IMEINO :", "SKU :", "TEST-TIME :", "RESULT :", "JIG :", "BOX :", "Mode", "ModelFile :"]
 
 def cambiar_formato_fecha(fecha):
     año, mes, dia = fecha.split("/")
@@ -207,7 +207,7 @@ def formatear_datos_para_insercion(datos_procesados, hostname, medio_param, plan
             dato.get("SKU", ""),
             dato.get("TEST-TIME", ""),
             "",  # Runtime (vacío)
-            "",  # ModelFile (vacío)
+            dato.get("ModelFile", ""),  # ModelFile (vacío)
             medio_id_param
         ]
         registros_formateados.append(registro_lista)
@@ -273,6 +273,6 @@ def Guardar_datos_stage_csv(lista_datos, hostname_path):
                 "SKU": dato.get("SKU", ""),
                 "TestTime": dato.get("TEST-TIME", ""),
                 "Runtime": "",
-                "ModelFile": "",
+                "ModelFile": dato.get("ModelFile", ""),
                 "Medio_id": medio_id
             })
