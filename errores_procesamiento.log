@@ -1,0 +1,13 @@
+2026-03-18 17:31:01 [ERROR] MainThread — Medio 'PCB_MAIN' no encontrado en DB — verificar que el nombre en Configuraciones.cfg coincida exactamente con medios_de_produccion.nombre
+2026-03-18 17:31:01 [ERROR] MainThread — Medio 'PCB_DCSD' no encontrado en DB — verificar que el nombre en Configuraciones.cfg coincida exactamente con medios_de_produccion.nombre
+2026-03-18 17:31:01 [ERROR] MainThread — [AutoTest] logs_path 'smb://casaabregu.local/compartido/Abregu%20Tomas/Proyectos/Motrex/LogProcesados/AutotestLogFiles' no existe o no es un directorio — saltando este medio
+2026-03-18 17:31:01 [ERROR] MainThread — [ManualInspection] logs_path 'smb://casaabregu.local/compartido/Abregu%20Tomas/Proyectos/Motrex/LogProcesados/ManualInspeccionLogFiles' no existe o no es un directorio — saltando este medio
+2026-03-18 17:31:01 [ERROR] MainThread — [OQC] logs_path 'smb://casaabregu.local/compartido/Abregu%20Tomas/Proyectos/Motrex/LogProcesados/OQClogFiles' no existe o no es un directorio — saltando este medio
+2026-03-18 17:31:01 [ERROR] MainThread — [PCB_MAIN] Nombre de medio no encontrado en la DB (¿está mal escrito en Configuraciones.cfg?) — saltando este medio
+2026-03-18 17:31:01 [ERROR] MainThread — [PCB_DCSD] Nombre de medio no encontrado en la DB (¿está mal escrito en Configuraciones.cfg?) — saltando este medio
+2026-03-18 17:31:01 [ERROR] MainThread — [ICT] logs_path '/ruta/a/logs/ict' no existe o no es un directorio — saltando este medio
+2026-03-18 17:33:36 [ERROR] MainThread — Medio 'PCB_MAIN' no encontrado en DB — verificar que el nombre en Configuraciones.cfg coincida exactamente con medios_de_produccion.nombre
+2026-03-18 17:33:36 [ERROR] MainThread — Medio 'PCB_DCSD' no encontrado en DB — verificar que el nombre en Configuraciones.cfg coincida exactamente con medios_de_produccion.nombre
+2026-03-18 17:34:35 [ERROR] MainThread — [PCB_MAIN] Nombre de medio no encontrado en la DB (¿está mal escrito en Configuraciones.cfg?) — saltando este medio
+2026-03-18 17:34:35 [ERROR] MainThread — [PCB_DCSD] Nombre de medio no encontrado en la DB (¿está mal escrito en Configuraciones.cfg?) — saltando este medio
+2026-03-18 17:34:35 [ERROR] MainThread — [ICT] logs_path '/ruta/a/logs/ict' no existe o no es un directorio — saltando este medio
