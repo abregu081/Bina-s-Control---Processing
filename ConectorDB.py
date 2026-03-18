@@ -25,6 +25,14 @@ class ConectorDB:
         self.cursor = self.conn.cursor()
         self.conexion = True
 
+    def reconectar_si_necesario(self):
+        """Verifica la conexión y reconecta si se perdió (resuelve BUG-06)."""
+        try:
+            self.conn.ping(reconnect=True)
+            self.cursor = self.conn.cursor()
+        except Exception:
+            self.conectar_db()
+
     def cerrar_conexion(self):
         if self.cursor:
             self.cursor.close()

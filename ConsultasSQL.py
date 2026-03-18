@@ -1,3 +1,4 @@
+import logging
 import ConectorDB as Conexion
 import pymysql
 from datetime import datetime, date, time, timedelta
@@ -211,7 +212,10 @@ class ConsultasSQL:
                 registros_existentes.add(clave)
                 
         except pymysql.MySQLError as e:
-            print(f"Error al obtener registros existentes: {e}")
+            logging.error(
+                f"[DEDUP FAILED] hostnames={list(hostnames)} error={e} — "
+                f"retornando {len(datos)} registros sin filtrar (riesgo de duplicados)"
+            )
             return datos  # Si falla, devolvemos todos para no perder datos
         
         # Filtrar en memoria (súper rápido)

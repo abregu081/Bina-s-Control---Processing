@@ -2,36 +2,33 @@ import os, csv, re
 import sys
 import Configuraciones as cfg
 import datetime
-import ConsultasSQL as SQL
 
-consultas_sql = SQL.ConsultasSQL()
-config = cfg.Configuraciones()
-logs_path = config.obtenerv_datos_configuracionees()[4]
-hostnames_tuplas = config.obtener_datos_hostname()
-lista_hostnames = [h[1] for h in hostnames_tuplas]
-medio = config.obtenerv_datos_configuracionees()[0]
-planta = config.obtenerv_datos_configuracionees()[2]
-
-if getattr(sys, 'frozen', False):
-    carpeta_actual = os.path.dirname(sys.executable)
-else:
-    carpeta_actual = os.path.dirname(os.path.abspath(__file__))
-
-carpeta_escenario = os.path.join(carpeta_actual, "Escenario")
-os.makedirs(carpeta_escenario, exist_ok=True)
-archivo_series = os.path.join(carpeta_escenario, "SeriesCapturados.csv")
-medio_id = consultas_sql.obtener_medio_id(medio)
-medio_id = medio_id['id_medios_de_produccion'] if medio_id else None
-
-# mas que nada son para armar el registro en la tabla Registros 
+# Palabras clave para extraer campos del encabezado de cada bloque
 palabras_clave = [
     "DATE :", "MODEL :", "P/N :", "TIME :",
     "PROGRAM :", "INIFILE :", "FAILITEM :",
     "IMEINO :", "SKU :", "TEST-TIME :", "RESULT :", "JIG :", "BOX :", "Mode", "ModelFile :"]
 
+
 def cambiar_formato_fecha(fecha):
-    año, mes, dia = fecha.split("/")
-    return f"{dia}/{mes}/{año}"
+    """
+    Convierte una fecha al formato dd/mm/yyyy.
+    Acepta: yyyy/mm/dd, yyyy-mm-dd, dd/mm/yyyy, dd-mm-yyyy.
+    Retorna "" si el formato no es reconocido, nunca lanza excepción (BUG-03 fix).
+    """
+    fecha_str = str(fecha).strip()
+    if not fecha_str:
+        return ""
+    for sep in ("/", "-"):
+        if sep in fecha_str:
+            partes = fecha_str.split(sep)
+            if len(partes) == 3:
+                if len(partes[0]) == 4:  # yyyy/mm/dd o yyyy-mm-dd → dd/mm/yyyy
+                    return f"{partes[2]}/{partes[1]}/{partes[0]}"
+                else:                     # dd/mm/yyyy o dd-mm-yyyy → normalizar a dd/mm/yyyy
+                    return f"{partes[0]}/{partes[1]}/{partes[2]}"
+    return ""
+
 
 def procesar_test(bloque):
     """
@@ -111,11 +108,11 @@ def procesar_test(bloque):
                 "Tiempo": tiempo  # Opcional, no se guarda en DB
             }
             tests.append(test_dict)
-        except (ValueError, IndexError) as e:
-            # Error parseando valores numéricos, saltar esta línea
+        except (ValueError, IndexError):
             continue
 
     return tests
+
 
 def Procesar_archivo(archivo):
     inicio_registro = "#INIT"
@@ -132,7 +129,6 @@ def Procesar_archivo(archivo):
         bloques = patron.findall(contenido)
 
     for bloque in bloques:
-        # Extraer campos del registro (código existente)
         datos_registro = {}
         for linea in bloque.splitlines():
             for palabra in palabras_clave:
@@ -141,10 +137,10 @@ def Procesar_archivo(archivo):
                     valor = linea.replace(palabra, "").strip()
                     datos_registro[clave] = valor
 
-        # NUEVO: Extraer tests de este bloque
+        # Extraer tests de este bloque
         test_resultados = procesar_test(bloque)
 
-        # NUEVO: Agregar campos identificadores a cada test
+        # Agregar campos identificadores a cada test
         fecha = datos_registro.get("DATE", "")
         hora = datos_registro.get("TIME", "")
         serial = datos_registro.get("P/N", "")
@@ -158,6 +154,7 @@ def Procesar_archivo(archivo):
         resultados.append(datos_registro)
 
     return (resultados, todos_los_tests)
+
 
 def formatear_datos_para_insercion(datos_procesados, hostname, medio_param, planta_param, medio_id_param):
     """
@@ -207,7 +204,7 @@ def formatear_datos_para_insercion(datos_procesados, hostname, medio_param, plan
             dato.get("SKU", ""),
             dato.get("TEST-TIME", ""),
             "",  # Runtime (vacío)
-            dato.get("ModelFile", ""),  # ModelFile (vacío)
+            dato.get("ModelFile", ""),
             medio_id_param
         ]
         registros_formateados.append(registro_lista)
@@ -236,43 +233,3 @@ def formatear_datos_para_insercion(datos_procesados, hostname, medio_param, plan
         tests_formateados.append(test_lista)
 
     return (registros_formateados, tests_formateados)
-
-def Guardar_datos_stage_csv(lista_datos, hostname_path):
-    campos = ["Fecha","Hora","Modelo","Serial","Resultado","Detalle",
-              "Medio","Hostname","Planta","Banda","Box","IMEI","SKU","TestTime","Runtime",
-              "ModelFile","Medio_id"]
-    # si no existe, escribo header. Si existe, solo append
-    existe = os.path.exists(archivo_series)
-    mode = "a" if existe else "w"
-    with open(archivo_series, mode=mode, newline="", encoding="utf-8") as file:
-        writer = csv.DictWriter(file, fieldnames=campos)
-        if not existe:
-            writer.writeheader()
-
-        for dato in lista_datos:
-            # OJO PONGO ESTO POR SI BOX NO EXISTE EN ALGUNOS LOGS, ASI USA JIG EN SU LUGAR
-            box_crudo = dato.get("BOX", "").strip()
-            if not box_crudo or box_crudo == "0":
-                box_crudo = dato.get("JIG", "").strip()
-            box_value = f"{box_crudo}" if box_crudo else "" #Cuidado aca si nuesto log tiene JIG : 08
-            
-            fecha_original = dato.get("DATE", "")
-            writer.writerow({
-                "Fecha": cambiar_formato_fecha(fecha_original) if fecha_original else "",
-                "Hora": dato.get("TIME", ""),
-                "Serial": dato.get("P/N", ""),
-                "Resultado": dato.get("RESULT", ""),
-                "Detalle": dato.get("FAILITEM", ""),
-                "Medio": medio,
-                "Modelo": dato.get("MODEL", ""),
-                "Hostname": hostname_path,
-                "Planta": planta,
-                "Banda": "",
-                "Box": box_value,
-                "IMEI": dato.get("IMEINO", ""),
-                "SKU": dato.get("SKU", ""),
-                "TestTime": dato.get("TEST-TIME", ""),
-                "Runtime": "",
-                "ModelFile": dato.get("ModelFile", ""),
-                "Medio_id": medio_id
-            })
