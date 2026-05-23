@@ -6,6 +6,7 @@
 2. Cambio principal, no se agrega el 0 como carater debido a que ya cuenta el log con  el mismo. 
             box_value = f"{box_crudo}" if box_crudo else "" #Cuidado aca si nuesto log tiene JIG : 08
 3. Si no lo tuviera habria que cambiarlo
+4. Se agrega la implementacion de la rama de produccion de Harman
             
 ## Notas:
 1. Este es un reversionado de la primeras versiones de 2025 Realizado en mis practicas
@@ -24,3 +25,7 @@
 | PCBInspeccionMAIN | 1.2 | 1.0.1 |
 | LADCMAF | 1.2 | 1.0.1 |
 | RUNIN | 1.2 | 1.0.1 |
+|AFT-HARMAN| 1.0 | 1.0
+
+
+## Nuevo puesto de inspeccion visual Carolina AOI

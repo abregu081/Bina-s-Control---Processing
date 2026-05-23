@@ -17,7 +17,8 @@
 
 --
 -- Table structure for table `medios_de_produccion`
-
+DROP TABLE IF EXISTS 'Registros';
+DROP TABLE IF EXISTS 'TOKEN';
 DROP TABLE IF EXISTS `medios_de_produccion`;
 DROP TABLE IF EXISTS `Medios_de_produccion`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
